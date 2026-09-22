@@ -169,36 +169,30 @@
   }
   @keyframes fadeIn{ from{ opacity:0; transform: translateY(8px);} to{opacity:1; transform:translateY(0);} }
 
-  .heart-float{
-    position:fixed;
-    font-size:1.2rem;
-    pointer-events:none;
-    animation: floatUp 2.5s ease-out forwards;
-    z-index:10;
-    opacity:0;
+  @keyframes gentleFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-8px); } }
+  .float{ animation: gentleFloat 3s ease-in-out infinite; }
+
+  @keyframes petalFall{
+    0%{ transform: translateY(-10vh) rotate(0deg); opacity:0; }
+    10%{ opacity:1; }
+    100%{ transform: translateY(100vh) rotate(720deg); opacity:0; }
   }
-  @keyframes floatUp{
-    0%{ opacity:0; transform: translateY(0) scale(0.5); }
-    20%{ opacity:1; transform: translateY(-20px) scale(1); }
-    100%{ opacity:0; transform: translateY(-120px) scale(0.6) rotate(20deg); }
+  .petal-fall{
+    position:fixed; pointer-events:none; z-index:5; font-size:1.2rem;
+    animation: petalFall linear forwards;
   }
 
-  .sparkle{
-    position:fixed;
-    width:4px; height:4px;
-    background: var(--gold);
-    border-radius:50%;
-    pointer-events:none;
-    z-index:10;
-    animation: sparkleAnim 1s ease-out forwards;
-  }
-  @keyframes sparkleAnim{
-    0%{ opacity:1; transform: scale(1); }
-    100%{ opacity:0; transform: scale(0); }
+  @keyframes shimmer{ 0%{ background-position:-200% center; } 100%{ background-position:200% center; } }
+  .shimmer{
+    background: linear-gradient(90deg, var(--ink) 0%, var(--gold) 50%, var(--ink) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation: shimmer 3s linear infinite;
   }
 
   @media (prefers-reduced-motion: reduce){
-    .core, .seed, .fade, .hint, .heart-float, .sparkle{ animation:none !important; transition:none !important; }
+    .core, .seed, .fade, .hint, .heart-float, .sparkle, .petal-fall{ animation:none !important; transition:none !important; }
   }
 </style>
 </head>
@@ -207,7 +201,7 @@
 <div class="dots" id="dots"></div>
 
 <main id="scene">
-  <div class="flower-wrap">
+  <div class="flower-wrap float">
     <canvas id="petalCanvas"></canvas>
     <svg viewBox="0 0 200 200" id="flowerSvg">
       <line class="stem" x1="100" y1="130" x2="100" y2="200"/>
@@ -224,35 +218,35 @@
 <script>
 const SCENES = [
   {
-    eyebrow: "",
-    text: "Alison…",
-    sub: "estas palabras llevan un mes creciendo dentro de mí.",
+    eyebrow: "21 de septiembre",
+    text: "Hoy es el dia de las flores amarillas.",
+    sub: "Y quiero que sepas algo que llevo tiempo callando.",
+  },
+  {
+    eyebrow: "tu sonrisa",
+    text: "Tu sonrisa se quedo conmigo.",
+    sub: "Desde la primera vez que te vi, no he podido dejar de pensar en ti. No es solo atraccion, es algo mas profundo.",
+  },
+  {
+    eyebrow: "lo que siento",
+    text: "Quiero que sepas que te quiero, Alison.",
+    sub: "No como un capricho, no como algo pasajero. Te quiero con calma, con ganas, con todo lo que soy.",
+  },
+  {
+    eyebrow: "lo que descubri",
+    text: "Contigo descubri que el amor no siempre llega fuerte.",
+    sub: "A veces llega despacio, como una semilla que va creciendo. Y un dia te das cuenta de que ya no puedes vivir sin ella.",
+  },
+  {
+    eyebrow: "mi verdad",
+    text: "No me importa el timing.",
+    sub: "Solo me importa que sepas que existes para mi. Que eres lo mas hermoso que me ha pasado. Que te amo, Alison.",
   },
   {
     eyebrow: "",
-    text: "No sé qué es esto que siento.",
-    sub: "Pero cada vez que suena tu nombre, algo en mí se enciende.",
-  },
-  {
-    eyebrow: "",
-    text: "Me gustas de una forma que no esperaba.",
-    sub: "Como si tu sonrisa hubiera encontrado un lugar en mí del que ya no quiero salir.",
-  },
-  {
-    eyebrow: "",
-    text: "No quiero apresurar nada.",
-    sub: "Solo quiero que sepas que existo por ti. Que me importas. Que quiero conocerte cada día un poco más.",
-  },
-  {
-    eyebrow: "",
-    text: "Tal vez esto es solo el comienzo.",
-    sub: "Pero un comienzo contigo vale más que cualquier final con otra persona.",
-  },
-  {
-    eyebrow: "",
-    text: "Alison, esto es solo una semilla.",
-    sub: "Pero sembrada con lo que siento, puede convertirse en algo hermoso.",
-    motto: "UN MES, UN GIRASOL, UNA ESPERANZA",
+    text: "Este girasol es tuyo.",
+    sub: "Por el dia de las flores amarillas. Por ser mi persona favorita. Por hacerme creer en esto.",
+    motto: "FLORES AMARILLAS, AMOR VERDADERO",
     final: true,
   },
 ];
@@ -308,6 +302,22 @@ function spawnHeart(){
   setTimeout(() => el.remove(), 2600);
 }
 
+function spawnPetals(count){
+  for(let k=0; k<count; k++){
+    setTimeout(()=>{
+      const el = document.createElement('div');
+      el.className = 'petal-fall';
+      el.textContent = ['🌻','🌼','✿','❀','✾'][Math.floor(Math.random()*5)];
+      el.style.left = Math.random()*100 + 'vw';
+      el.style.animationDuration = (2 + Math.random()*2) + 's';
+      el.style.fontSize = (0.7 + Math.random()*0.8) + 'rem';
+      el.style.opacity = '0.6';
+      document.body.appendChild(el);
+      setTimeout(()=> el.remove(), 4500);
+    }, k*200);
+  }
+}
+
 function spawnSparkles(count){
   for (let k = 0; k < count; k++){
     setTimeout(() => {
@@ -333,7 +343,7 @@ function renderScene(){
 
   stageTextEl.innerHTML = `
     ${s.eyebrow ? `<p class="eyebrow">${s.eyebrow}</p>` : ''}
-    <h1 class="line">${s.text}</h1>
+    <h1 class="line${s.final ? ' shimmer' : ''}">${s.text}</h1>
     ${s.sub ? `<p class="sub">${s.sub}</p>` : ''}
     ${s.motto ? `<div class="motto"><span></span><p>${s.motto}</p><span></span></div>` : ''}
     ${s.signature ? `<p class="sig">${s.signature}</p>` : ''}
@@ -346,6 +356,7 @@ function renderScene(){
     for (let h = 0; h < 3; h++) setTimeout(() => spawnHeart(), h * 300);
   }
   if (s.final) spawnSparkles(12);
+  if (s.final) spawnPetals(20);
 
   if (s.final){
     const btn = document.getElementById('restartBtn');

@@ -124,18 +124,6 @@
     letter-spacing: 0.03em;
     color: var(--gold);
   }
-  .hint{
-    position:absolute;
-    bottom: 5vh;
-    left:0; right:0;
-    text-align:center;
-    font-size:0.78rem;
-    color: var(--ink-soft);
-    letter-spacing: 0.02em;
-    opacity: 0.85;
-    animation: pulse 2.4s ease-in-out infinite;
-  }
-  @keyframes pulse{ 0%,100%{opacity:0.35} 50%{opacity:0.85} }
 
   .dots{
     position:absolute;
@@ -160,39 +148,116 @@
     padding: 10px 22px;
     border-radius: 999px;
     cursor:pointer;
-    transition: border-color .3s ease, background .3s ease;
+    transition: border-color .3s ease, background .3s ease, transform .2s ease;
   }
-  .restart:hover{ border-color: var(--gold); background: rgba(255,195,0,0.08); }
+  .restart:hover{ border-color: var(--gold); background: rgba(255,195,0,0.08); transform: scale(1.05); }
 
   .fade{
     animation: fadeIn 0.9s ease both;
   }
-  @keyframes fadeIn{ from{ opacity:0; transform: translateY(8px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes fadeIn{ from{ opacity:0; transform: translateY(8px) scale(0.98);} to{opacity:1; transform:translateY(0) scale(1);} }
 
-  @keyframes gentleFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-8px); } }
-  .float{ animation: gentleFloat 3s ease-in-out infinite; }
+  @keyframes gentleFloat{ 0%,100%{ transform:translateY(0) rotate(-1deg); } 50%{ transform:translateY(-12px) rotate(1deg); } }
+  .float{ animation: gentleFloat 4s ease-in-out infinite; }
+
+  @keyframes glowPulse{
+    0%,100%{ filter: drop-shadow(0 0 10px rgba(232,99,15,0.3)) drop-shadow(0 10px 40px rgba(0,0,0,0.5)); }
+    50%{ filter: drop-shadow(0 0 25px rgba(232,99,15,0.7)) drop-shadow(0 10px 40px rgba(0,0,0,0.5)); }
+  }
+  .glow{ animation: glowPulse 2s ease-in-out infinite; }
 
   @keyframes petalFall{
-    0%{ transform: translateY(-10vh) rotate(0deg); opacity:0; }
-    10%{ opacity:1; }
-    100%{ transform: translateY(100vh) rotate(720deg); opacity:0; }
+    0%{ transform: translateY(-10vh) translateX(0) rotate(0deg) scale(0.3); opacity:0; }
+    10%{ opacity:0.9; transform: scale(1); }
+    50%{ transform: translateX(30px) rotate(360deg); }
+    100%{ transform: translateY(100vh) translateX(-20px) rotate(720deg) scale(0.2); opacity:0; }
   }
   .petal-fall{
-    position:fixed; pointer-events:none; z-index:5; font-size:1.2rem;
+    position:fixed; pointer-events:none; z-index:5;
     animation: petalFall linear forwards;
+  }
+
+  @keyframes heartPulse{
+    0%{ transform: scale(0) translateY(0); opacity:0; }
+    15%{ transform: scale(1.3) translateY(-15px); opacity:1; }
+    30%{ transform: scale(0.85) translateY(-30px); }
+    45%{ transform: scale(1.1) translateY(-50px); }
+    100%{ transform: scale(0.4) translateY(-150px); opacity:0; }
+  }
+  .heart-float{
+    position:fixed; pointer-events:none; z-index:10;
+    animation: heartPulse 2.2s ease-out forwards;
+  }
+
+  @keyframes sparkleAnim{
+    0%{ opacity:0; transform: scale(0) rotate(0deg); }
+    30%{ opacity:1; transform: scale(1.3) rotate(120deg); }
+    60%{ transform: scale(0.8) rotate(240deg); }
+    100%{ opacity:0; transform: scale(0) rotate(360deg); }
+  }
+  .sparkle{
+    position:fixed; pointer-events:none; z-index:10;
+    animation: sparkleAnim 1.4s ease-out forwards;
   }
 
   @keyframes shimmer{ 0%{ background-position:-200% center; } 100%{ background-position:200% center; } }
   .shimmer{
-    background: linear-gradient(90deg, var(--ink) 0%, var(--gold) 50%, var(--ink) 100%);
+    background: linear-gradient(90deg, var(--ink) 0%, var(--gold) 30%, #FFD700 50%, var(--gold) 70%, var(--ink) 100%);
     background-size: 200% auto;
     -webkit-background-clip:text; background-clip:text;
     -webkit-text-fill-color:transparent;
-    animation: shimmer 3s linear infinite;
+    animation: shimmer 2.5s linear infinite;
+  }
+
+  @keyframes textReveal{
+    0%{ clip-path: inset(0 100% 0 0); opacity:0; }
+    30%{ opacity:1; }
+    100%{ clip-path: inset(0 0% 0 0); opacity:1; }
+  }
+  .reveal{ animation: textReveal 1.4s ease-out forwards; }
+
+  @keyframes backgroundFloat{
+    0%{ transform: translateY(110vh) rotate(0deg); opacity:0; }
+    15%{ opacity:0.5; }
+    85%{ opacity:0.5; }
+    100%{ transform: translateY(-10vh) rotate(360deg); opacity:0; }
+  }
+  .bg-particle{
+    position:fixed; pointer-events:none; z-index:1;
+    animation: backgroundFloat linear infinite;
+  }
+
+  @keyframes eyeBrowPop{
+    0%{ opacity:0; transform: translateY(-10px) scale(0.8); letter-spacing: 0.15em; }
+    100%{ opacity:1; transform: translateY(0) scale(1); letter-spacing: 0.02em; }
+  }
+  .eyebrow{ animation: eyeBrowPop 0.8s ease-out both; }
+
+  @keyframes dotBounce{
+    0%,100%{ transform: scale(1); }
+    50%{ transform: scale(1.5); }
+  }
+  .dot.active{ animation: dotBounce 0.6s ease-out; }
+
+  @keyframes hintBreathe{
+    0%,100%{ opacity:0.35; transform: translateY(0); }
+    50%{ opacity:0.9; transform: translateY(-3px); }
+  }
+  .hint{ animation: hintBreathe 2.8s ease-in-out infinite; }
+
+  @keyframes restartGlow{
+    0%,100%{ box-shadow: 0 0 0 rgba(232,99,15,0); }
+    50%{ box-shadow: 0 0 15px rgba(232,99,15,0.3); }
+  }
+  .restart:hover{ animation: restartGlow 1.5s ease-in-out infinite; }
+
+  @keyframes wink{
+    0%,100%{ transform: scale(1); }
+    50%{ transform: scale(1) rotate(10deg); }
   }
 
   @media (prefers-reduced-motion: reduce){
-    .core, .seed, .fade, .hint, .heart-float, .sparkle, .petal-fall{ animation:none !important; transition:none !important; }
+    .core, .seed, .fade, .hint, .heart-float, .sparkle, .petal-float, .bg-particle, .glow, .float, .shimmer{ animation:none !important; transition:none !important; }
   }
 </style>
 </head>
@@ -294,12 +359,12 @@ function animateBloomTo(target){
 function spawnHeart(){
   const el = document.createElement('div');
   el.className = 'heart-float';
-  el.textContent = ['🌻','💛','✨','🧡','🌸'][Math.floor(Math.random()*5)];
+  el.textContent = ['🌻','💛','✨','🧡','🌸','🌼','💛'][Math.floor(Math.random()*7)];
   el.style.left = (20 + Math.random()*60) + 'vw';
-  el.style.top = (60 + Math.random()*30) + 'vh';
-  el.style.fontSize = (0.8 + Math.random()*1.4) + 'rem';
+  el.style.top = (50 + Math.random()*40) + 'vh';
+  el.style.fontSize = (0.9 + Math.random()*1.5) + 'rem';
   document.body.appendChild(el);
-  setTimeout(() => el.remove(), 2600);
+  setTimeout(() => el.remove(), 2400);
 }
 
 function spawnPetals(count){
@@ -307,14 +372,29 @@ function spawnPetals(count){
     setTimeout(()=>{
       const el = document.createElement('div');
       el.className = 'petal-fall';
-      el.textContent = ['🌻','🌼','✿','❀','✾'][Math.floor(Math.random()*5)];
+      el.textContent = ['🌻','🌼','✿','❀','✾','🌷','🏵️','💮'][Math.floor(Math.random()*8)];
       el.style.left = Math.random()*100 + 'vw';
-      el.style.animationDuration = (2 + Math.random()*2) + 's';
-      el.style.fontSize = (0.7 + Math.random()*0.8) + 'rem';
-      el.style.opacity = '0.6';
+      el.style.animationDuration = (2.5 + Math.random()*2.5) + 's';
+      el.style.fontSize = (0.6 + Math.random()*1) + 'rem';
+      el.style.opacity = (0.4 + Math.random()*0.4).toFixed(2);
       document.body.appendChild(el);
-      setTimeout(()=> el.remove(), 4500);
-    }, k*200);
+      setTimeout(()=> el.remove(), 5500);
+    }, k*150);
+  }
+}
+
+function spawnBackgroundParticles(count){
+  const emojis = ['🌻','💛','✨','🌼','🧡','✿','❀'];
+  for(let k=0; k<count; k++){
+    const el = document.createElement('div');
+    el.className = 'bg-particle';
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    el.style.left = Math.random()*100 + 'vw';
+    el.style.animationDuration = (8 + Math.random()*12) + 's';
+    el.style.animationDelay = Math.random()*5 + 's';
+    el.style.fontSize = (0.8 + Math.random()*0.8) + 'rem';
+    el.style.opacity = (0.15 + Math.random()*0.2).toFixed(2);
+    document.body.appendChild(el);
   }
 }
 
@@ -325,9 +405,13 @@ function spawnSparkles(count){
       el.className = 'sparkle';
       el.style.left = (30 + Math.random()*40) + 'vw';
       el.style.top = (30 + Math.random()*40) + 'vh';
+      el.style.width = (4 + Math.random()*6) + 'px';
+      el.style.height = el.style.width;
+      el.style.background = ['var(--gold)','#FFD700','#FFA500'][Math.floor(Math.random()*3)];
+      el.style.borderRadius = '50%';
       document.body.appendChild(el);
-      setTimeout(() => el.remove(), 1000);
-    }, k * 80);
+      setTimeout(() => el.remove(), 1400);
+    }, k * 60);
   }
 }
 
@@ -343,8 +427,8 @@ function renderScene(){
 
   stageTextEl.innerHTML = `
     ${s.eyebrow ? `<p class="eyebrow">${s.eyebrow}</p>` : ''}
-    <h1 class="line${s.final ? ' shimmer' : ''}">${s.text}</h1>
-    ${s.sub ? `<p class="sub">${s.sub}</p>` : ''}
+    <h1 class="line reveal${s.final ? ' shimmer' : ''}">${s.text}</h1>
+    ${s.sub ? `<p class="sub reveal" style="animation-delay:0.4s">${s.sub}</p>` : ''}
     ${s.motto ? `<div class="motto"><span></span><p>${s.motto}</p><span></span></div>` : ''}
     ${s.signature ? `<p class="sig">${s.signature}</p>` : ''}
     ${s.final ? `<button class="restart" id="restartBtn">ver de nuevo</button>` : ''}
@@ -352,11 +436,21 @@ function renderScene(){
 
   hintEl.style.display = s.final ? 'none' : 'block';
 
+  const wrap = document.querySelector('.flower-wrap');
+  if (i >= 2) wrap.classList.add('glow');
+  if (i < 2) wrap.classList.remove('glow');
+
   if (i > 0){
-    for (let h = 0; h < 3; h++) setTimeout(() => spawnHeart(), h * 300);
+    for (let h = 0; h < 4; h++) setTimeout(() => spawnHeart(), h * 250);
   }
-  if (s.final) spawnSparkles(12);
-  if (s.final) spawnPetals(20);
+  if (s.final){
+    spawnSparkles(18);
+    spawnPetals(30);
+  }
+  if (i === 3){
+    spawnPetals(10);
+    spawnSparkles(8);
+  }
 
   if (s.final){
     const btn = document.getElementById('restartBtn');
@@ -396,6 +490,7 @@ for (let s = 0; s < 40; s++){
 
 applyBloom(0);
 renderScene();
+spawnBackgroundParticles(8);
 
 (function initShader(){
   const canvas = document.getElementById('petalCanvas');
